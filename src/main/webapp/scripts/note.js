@@ -350,51 +350,55 @@ function showTrashBin(){
 }
 /** 加载回收站的笔记列表 */
 function loadTrashBin(){
+	var ul = $("#trash-bin ul")
+	ul.empty();
+
+	new Promise(function(resolve){
+		showNotebooksInTrashBin(ul);
+		resolve();
+	}).then(function(){
+		showNotesInTrashBin(ul);
+	});
+}
+/** 展示回收站里的笔记本列表 */
+function showNotebooksInTrashBin(ul){
 	var url = "notebook/list.do";
 	var data = {"userId":getCookie("userId"),"type":"2"};
 	$.getJSON(url,data,function(result){
 		if(result.state==SUCCESS){
-			console.log(result.data)
-			showNotebooksInTrashBin(result.data);
+			var notebooks = result.data;
+			for(var i=0;i<notebooks.length;i++){
+				var notebook = notebooks[i];
+				var li = trashBinNotebookItem.replace("[name]",notebook.name);
+				li = $(li);
+				li.data("notebookId",notebook.id);
+				li.data("name",notebook.name);
+				ul.append(li);
+			}
 		}else{
 			alert(result.message)
 		}
 	});
-	
+
+}
+/** 展示回收站里的笔记列表 */
+function showNotesInTrashBin(ul){
 	var url = "note/trash.do";
 	var data = {"userId":getCookie("userId"),"statusId":"0"};
 	$.getJSON(url,data,function(result){
 		if(result.state==SUCCESS){
-			showNotesInTrashBin(result.data);
+			var notes = result.data
+			for(var i=0;i<notes.length;i++){
+				var note = notes[i];
+				var li = trashBinNoteItem.replace("[title]",note.title);
+				li = $(li);
+				li.data("noteId",note.id);
+				ul.append(li);
+			}
 		}else{
 			alert(result.message)
 		}
 	});
-}
-/** 展示回收站里的笔记本列表 */
-function showNotebooksInTrashBin(notebooks){
-	var ul = $("#trash-bin ul")
-	ul.empty();
-	for(var i=0;i<notebooks.length;i++){
-		var notebook = notebooks[i];
-		var li = trashBinNotebookItem.replace("[name]",notebook.name);
-		li = $(li);
-		li.data("notebookId",notebook.id);
-		li.data("name",notebook.name);
-		ul.append(li);
-	}
-}
-/** 展示回收站里的笔记列表 */
-function showNotesInTrashBin(notes){
-	var ul = $("#trash-bin ul")
-//	ul.empty();
-	for(var i=0;i<notes.length;i++){
-		var note = notes[i];
-		var li = trashBinNoteItem.replace("[title]",note.title);
-		li = $(li);
-		li.data("noteId",note.id);
-		ul.append(li);
-	}
 }
 /** 删除当前的笔记 */
 function deleteNote(){
