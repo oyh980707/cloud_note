@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.loveoyh.note.dao.PersonDAO">
+	<!-- 
+		在插入时自动生成id
+		打开useGeneratedKeys="true" 可以读取自增ID
+		设置keyProperty="id" 告诉mybatis将读取结果赋值给参数Person对象的id属性
+	 -->
+	<insert id="addPerson" parameterType="com.loveoyh.note.entity.Person" useGeneratedKeys="true" keyProperty="id">
+		insert into
+			p_person(
+				id,
+				name
+			)
+			values(
+				null,
+				#{name}
+			)
+	</insert>
+</mapper>

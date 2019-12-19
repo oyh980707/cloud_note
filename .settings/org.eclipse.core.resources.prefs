@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/loveoyh/note/entity/Comment.java=UTF-8
+encoding//src/main/java/com/loveoyh/note/entity/Person.java=UTF-8
+encoding//src/main/java/com/loveoyh/note/entity/Post.java=UTF-8
+encoding//src/main/webapp/alert/alert_delete_notebook.html=UTF-8
+encoding//src/main/webapp/alert/alert_delete_rollback.html=UTF-8
+encoding//src/main/webapp/alert/alert_note.html=UTF-8
+encoding//src/main/webapp/alert/alert_notebook.html=UTF-8
+encoding//src/main/webapp/alert/alert_replay.html=UTF-8

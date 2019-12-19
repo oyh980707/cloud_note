@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+</head>
+<body>
+	<h1>Ajax 文件上载</h1>
+	<input type="file" id="file1">
+	<input type="file" id="file2">
+	<input type="button" id="upload" value="上载">
+	<div id="result"></div>
+</body>
+<script type="text/javascript">
+$(function(){
+	$("#upload").click(ajaxUpload);
+	//文件的ajax上载
+	function ajaxUpload(){
+		var file1 = $("#file1")[0].files[0];
+		var file2 = $("#file2")[0].files[0];
+		//创建内存中的表单对象
+		var form = new FormData();
+		//添加项服务器传输的数据
+		form.append("userfile1",file1);
+		form.append("userfile2",file2);
+		$.ajax({
+			"url":"user/upload.do",
+			"data":form,
+			"type":"post",
+			"dataType":"json",
+			"contentType":false,
+			"processData":false,
+			"success": function(obj){
+				if(obj.state==0){
+					$("#result").html("成功");
+				}
+			}
+		});
+	}
+});
+</script>
+</html>

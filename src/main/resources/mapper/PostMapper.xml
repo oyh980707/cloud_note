@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.loveoyh.note.dao.PostDAO">
+	<!-- 复杂映射必须使用resultMap 进行处理 -->
+	<resultMap type="com.loveoyh.note.entity.Post" id="postMap">
+		<!-- 逐一映射每个属性 -->
+		<!-- 数据库主键,使用id映射 -->
+		<id column="id" property="id"/>
+		<!-- 非主键,使用result映射 -->
+		<result column="title" property="title"/>
+		<!-- 映射 实体属性  association(关联)映射 -->
+		<association property="person" javaType="com.loveoyh.note.entity.Person">
+			<id column="person_id" property="id"/>
+			<result column="name" property="name"/>
+		</association>
+		<!-- 属性是个集合,使用collection 进行映射处理 -->
+		<collection property="comments" select="findCommentsByPostId" column="id"></collection>
+	</resultMap>
+	
+	<select id="findCommentsByPostId" parameterType="int" resultType="com.loveoyh.note.entity.Comment">
+		select
+			id,
+			title,
+			post_id as postId
+		from
+			p_comment
+		where
+			post_id=#{id}
+	</select>
+	
+	<select id="findPostById" parameterType="int" resultMap="postMap">
+		select
+			p_post.id,
+			title,
+			person_id,
+			p.name
+		from
+			p_post
+		left outer join
+			p_person p on p.id=person_id
+		where
+			p_post.id=#{id}
+	</select>
+</mapper>

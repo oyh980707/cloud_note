@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.loveoyh.note.dao.NotebookDAO">
+	<!-- 增加笔记本 -->
+	<!-- addNotebook(Notebook notebook) -->
+	<insert id="addNotebook" parameterType="com.loveoyh.note.entity.Notebook">
+		insert into
+		cn_notebook
+		(
+			cn_notebook_id,
+			cn_user_id,
+			cn_notebook_type_id,
+			cn_notebook_name,
+			cn_notebook_desc,
+			cn_notebook_createtime
+		)
+		values
+		(
+			#{id},
+			#{userId},
+			#{notebookTypeId},
+			#{name},
+			#{notebookDesc},
+			#{createtime}
+		)
+	</insert>
+	<!-- 删除笔记本 -->
+	<!-- int removeNotebook(String notebookId) -->
+	<delete id="removeNotebook" parameterType="string">
+		delete from
+			cn_notebook
+		where
+			cn_notebook_id = #{notebookId}
+	</delete>
+	
+	<delete id="deleteNoteById" parameterType="string">
+		delete from
+			cn_note
+		where
+			cn_note_id=#{noteId}
+	</delete>
+	
+	<!-- 更新笔记本 -->
+	<!-- updateNotebook(Notebook note) -->
+	<update id="updateNotebook" parameterType="com.loveoyh.note.entity.Notebook">
+	    update
+	        cn_notebook
+		    <set>
+		    	<trim suffixOverrides=",">
+			        <if test="userId!=null">
+			            cn_user_id=#{userId},
+			        </if>
+			        <if test="notebookTypeId!=null">
+			            cn_notebook_type_id=#{notebookTypeId},
+			        </if>
+			        <if test="name!=null">
+			            cn_notebook_name=#{name},
+			        </if>
+			        <if test="notebookDesc!=null">
+			            cn_notebook_desc=#{notebookDesc},
+			        </if>
+			    </trim>
+		    </set>
+	    where 
+	        cn_notebook_id=#{id}
+	</update>
+
+	<!-- 根据用户名查找 -->
+	<select id="findNotebooksByUserId" resultType="map">
+		select
+			cn_notebook_id as id,
+			cn_notebook_name as name
+		from
+			cn_notebook
+		where
+			cn_user_id = #{userId}
+			<if test="type!=null">
+				 and cn_notebook_type_id = #{type}
+			</if>
+		order by
+			cn_notebook_createtime desc
+	</select>
+	<!-- 根据笔记本id查找笔记本 -->
+	<select id="findNotebookById" parameterType="string" resultType="com.loveoyh.note.entity.Notebook">
+		select
+			cn_notebook_id as id,
+			cn_user_id as userId,
+			cn_notebook_type_id notebookTypeId,
+			cn_notebook_name as name,
+			cn_notebook_desc as notebookDesc,
+			cn_notebook_createtime as createtime
+		from
+			cn_notebook
+		where
+			cn_notebook_id = #{notebookId}
+	</select>
+	<!-- 根据笔记本的id查询笔记本的数目 -->
+	<select id="countNotebookById" parameterType="string" resultType="int">
+		select
+			count(*)
+		from
+			cn_notebook
+		where
+			cn_notebook_id = #{notebookId}
+	</select>
+	
+	<!-- 分页查询语句 查询笔记本列表-->
+	<select id="findNotebooksByPage" resultType="map">
+		select
+			cn_notebook_id as id,
+			cn_notebook_name as name
+		from
+			${table}
+		where
+			cn_user_id = #{userId}
+		order by
+			cn_notebook_createtime desc
+		limit #{start},#{pageSize}
+	</select>
+	
+	
+</mapper>

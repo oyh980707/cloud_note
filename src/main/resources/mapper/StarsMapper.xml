@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.loveoyh.note.dao.StarsDAO">
+	<!-- 查询操作 -->
+	<select id="findSatrsByUserId" parameterType="string" resultType="com.loveoyh.note.entity.Stars">
+		select
+			cn_star_id as id,
+			cn_user_id as userId,
+			cn_stars as stars
+		from
+			cn_star
+		where
+			cn_user_id = #{userId}
+	</select>
+	
+	<!-- 插入操作 -->
+	<insert id="insertStars" parameterType="com.loveoyh.note.entity.Stars">
+		insert into cn_star(
+			cn_star_id,
+			cn_user_id,
+			cn_stars
+		) values(
+			#{id},
+			#{userId},
+			#{stars}
+		)
+	</insert>
+	<!-- 更新操作 -->
+	<update id="updateStars" parameterType="com.loveoyh.note.entity.Stars">
+		update cn_star
+		set
+			cn_stars = #{stars}
+		where
+			cn_user_id=#{userId} or cn_star_id=#{id}
+	</update>
+</mapper>

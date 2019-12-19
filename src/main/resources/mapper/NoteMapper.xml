@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.loveoyh.note.dao.NoteDAO">
+	<!-- 根据笔记本id查找 -->
+	<select id="findNotesByNotebookId" parameterType="string" resultType="map">
+		select
+			cn_note_id as id,
+			cn_note_title as title
+		from
+			cn_note
+		where
+			cn_notebook_id = #{notebookId} and
+			cn_note_status_id = '1'
+		order by
+			cn_note_last_modify_time desc
+	</select>
+	<!-- 根据笔记id查找所有内容 -->
+	<select id="findNoteById" parameterType="string" resultType="com.loveoyh.note.entity.Note">
+		select
+			cn_note_id as id,
+			cn_notebook_id as notebookId,
+			cn_user_id as userId,
+			cn_note_status_id as noteStatusId,
+			cn_note_type_id as noteTypeId,
+			cn_note_title as title,
+			cn_note_body as body,
+			cn_note_create_time as createtime,
+			cn_note_last_modify_time as lastModifyTime
+		from
+			cn_note
+		where
+			cn_note_id = #{noteId}
+	</select>
+	<!-- 新增笔记 -->
+	<insert id="addNote" parameterType="com.loveoyh.note.entity.Note">
+		insert into
+		cn_note
+		(
+			cn_note_id,
+			cn_notebook_id,
+			cn_user_id,
+			cn_note_status_id,
+			cn_note_type_id,
+			cn_note_title,
+			cn_note_body,
+			cn_note_create_time,
+			cn_note_last_modify_time
+		)
+		values
+		(
+			#{id},
+			#{notebookId},
+			#{userId},
+			#{noteStatusId},
+			#{noteTypeId},
+			#{title},
+			#{body},
+			#{createtime},
+			#{lastModifyTime}
+		)
+	</insert>
+	<!-- 更新笔记 -->
+	<update id="updateNote" parameterType="com.loveoyh.note.entity.Note">
+	    update
+	        cn_note
+		    <set>
+		    	<trim suffixOverrides=",">
+			        <if test="notebookId!=null">
+			            cn_notebook_id=#{notebookId},
+			        </if>
+			        <if test="userId!=null">
+			            cn_user_id=#{userId},
+			        </if>
+			        <if test="noteStatusId!=null">
+			            cn_note_status_id=#{noteStatusId},
+			        </if>
+			        <if test="noteTypeId!=null">
+			            cn_note_type_id=#{noteTypeId},
+			        </if>
+			        <if test="title!=null">
+			            cn_note_title=#{title},
+			        </if>
+			        <if test="body!=null">
+			            cn_note_body=#{body},
+			        </if>
+			        <if test="lastModifyTime !=null">
+			        	cn_note_last_modify_time=#{lastModifyTime}
+			        </if>
+			    </trim>
+		    </set>
+	    where 
+	        cn_note_id=#{id}
+	</update>
+	<!-- 根据笔记的id查询笔记的数目确保存在 -->
+	<select id="countNoteById" parameterType="string" resultType="int">
+		select
+			count(*)
+		from
+			cn_note
+		where
+			cn_note_id = #{noteId}
+	</select>
+	<!-- 根据用户id查找删除的笔记 -->
+	<select id="findDeleteNotesByUserId" parameterType="string" resultType="map">
+		select
+			cn_note_id as id,
+			cn_note_title as title
+		from
+			cn_note
+		where
+			cn_user_id = #{userId} and
+			cn_note_status_id = '0'
+		order by
+			cn_note_last_modify_time desc
+	</select>
+	<!-- 删除笔记 -->
+	<delete id="removeNote" parameterType="string">
+		delete from
+			cn_note
+		where
+			cn_note_id = #{noteId}
+	</delete>
+	
+	<delete id="deleteNoteById" parameterType="string">
+		delete from
+			cn_note
+		where
+			cn_note_id=#{noteId}
+	</delete>
+	
+	<delete id="deleteNotes">
+		delete from 
+			cn_note
+		where
+			cn_note_id in
+			<foreach collection="ids" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</delete>
+	
+	
+	<select id="findNotes" resultType="map">
+		select
+			cn_note_id as id,
+			cn_note_title as title
+		from
+			cn_note
+		<where>
+			<trim suffixOverrides="and">
+				<if test="userId != null">
+					cn_user_id = #{userId} and
+				</if>
+				<if test="notebookId != null">
+					cn_notebook_id = #{notebookId} and
+				</if>
+				<if test="statusId != null">
+					cn_note_status_id = #{statusId}
+				</if>
+			</trim>
+		</where>
+		order by
+			cn_note_last_modify_time desc
+	</select>
+	
+	<!-- 分页查询语句 查询笔记列表-->
+	<select id="findNotesByPage" resultType="map">
+		select
+			cn_note_id as id,
+			cn_note_title as title
+		from
+			${table}
+		where
+			cn_notebook_id = #{notebookId} and
+			cn_note_status_id = '1'
+		order by
+			cn_note_last_modify_time desc
+		limit #{start},#{pageSize}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
