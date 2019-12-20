@@ -10,7 +10,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/favico-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="ico/favico-57-precomposed.png">
         <link rel="shortcut icon" href="ico/favico.png">
-        <link rel="shortcut icon" href="ico/favico.ico">
+        <link rel="shortcut icon" href="ico/favicon.ico">
         <link rel="stylesheet" href="styles/icon.css"/>
         <link rel="stylesheet" href="styles/main.css"/>
 		<!-- Google-Code代码高亮CSS -->
@@ -27,6 +27,16 @@
     		.online:hover #delete_notebook{
     			display: block;
     		}
+    		.header .dropdown{
+    			padding-left: 25px;
+    			float: left;
+    			width: 100px;
+    			height: 60px;
+    		}
+    		.header .dropdown .dropdown-toggle{
+    			margin: 0 auto;
+    			line-height: 60px;
+    		}
     	</style>
     </head>
     <body class="animated fadeIn">
@@ -36,6 +46,16 @@
                     <img class="brand-logo" src="images/dummy/8986f28e.stilearn-logo.png" alt="Stilearn Admin Sample Logo">
                 </a>
             </div>
+            <div class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 创&nbsp;&nbsp;作 <span class="caret"></span></a>
+	          <ul id="create-menu" class="dropdown-menu">
+	            <li class="add-notebook"><a href="javascript:void(0)">创建笔记本</a></li>
+	            <li class="add-note"><a href="javascript:void(0)">创建笔记</a></li>
+	            <li class="add-memorandum"><a href="javascript:void(0)">创建备忘录</a></li>
+	            <li role="separator" class="divider"></li>
+	            <li><a href="javascript:void(0)">Other 待添加</a></li>
+	          </ul>
+	        </div>
             <div class="header-profile">
                 <div class="profile-nav">
                     <span class="profile-username"></span>
@@ -62,6 +82,7 @@
                 </li>
             </ul>
         </header>
+        
 		<div class="row" style='padding:0;' id='center'>
 			<!-- alert_background-->
 			<div class="opacity_bg" style='display:none'></div>

@@ -29,6 +29,7 @@ $(function(){
 	
 	//添加笔记本列表的点击事件
 	$("#notebook-list").on("click","#add_notebook",showAddNotebookDialog);
+	$("#create-menu").on("click",".add-notebook",showAddNotebookDialog);
 	//创建笔记本绑定事件
 	$("#can").on("click",".create-notebook",addNotebook);
 	
@@ -36,6 +37,7 @@ $(function(){
 	$("#note-list").on("click",".note",loadNote);
 	//添加笔记绑定事件
 	$("#note-list").on("click","#add_note",showAddNoteDialog);
+	$("#create-menu").on("click",".add-note",showAddNoteDialog);
 	//创建笔记绑定事件
 	$("#can").on("click",".create-note",addNote);
 	//取消创建绑定事件
@@ -612,30 +614,46 @@ function addNote(){
 	var url = "note/add.do";
 	var data = {
 			"userId":getCookie("userId"),
-			"notebookId":$(document).data("notebookId"),
+			"notebookId": $("#add-to-notebook").val(),
 			"title":title
 	};
 //	console.log(data);
 	$.post(url,data,function(result){
 		if(result.state==SUCCESS){
 			var note = result.data;
-			//显示当前创建的note
-			showNote(note);
-			var ul = $("#note-list ul");
-			var li = noteTemplate.replace('[title]',note.title);
-			li = $(li);
-			// 将 note.id 绑定到 li
-			li.data("noteId",note.id);
 			
-			//在被点击的笔记本li增加选定效果
-			ul.find("a").removeClass("checked");
-			li.find("a").addClass("checked");
+			var notebookLis = $("#notebook_list").children();
+			for(let i=0;i<notebookLis.length;i++){
+				var li = $(notebookLis[i]);
+//				console.log(li);
+				if(li.data("notebookId") == note.notebookId){
+					//这里执行顺序有问题，点击后不能立马把元素添加上来，所以
+					//这里获得元素必须延迟一点。
+					setTimeout(() => {
+						console.log($("#note-list ul").children());
+				    	$("#note-list ul").children().eq(0).click();
+					},300);
+					console.log(li);
+					li.click();
+				}
+			}
 			
-			ul.prepend(li);
+//			//显示当前创建的note
+//			showNote(note);
+//			var ul = $("#note-list ul");
+//			var li = noteTemplate.replace('[title]',note.title);
+//			li = $(li);
+//			// 将 note.id 绑定到 li
+//			li.data("noteId",note.id);
+//			
+//			//在被点击的笔记本li增加选定效果
+//			ul.find("a").removeClass("checked");
+//			li.find("a").addClass("checked");
+//			
+//			ul.prepend(li);
 			
 			//关闭对话框
 			closeDialog();
-			
 		}else{
 			alert(result.message);
 		}
@@ -644,17 +662,41 @@ function addNote(){
 /** 添加笔记对话框 */
 function showAddNoteDialog(){
 	var id = $(document).data("notebookId");
-	if(id){
-		$("#can").load("alert/alert_note.html",function(){
-			//让背景编程灰色
-			$(".opacity_bg").show();
-			//触发获得焦点事件
-			$("#input_note").focus();
-		});
-		return ;
-	}
-	alert("请选择笔记本!");
-	return ;
+	$("#can").load("alert/alert_note.html",function(){
+		//让背景编程灰色
+		$(".opacity_bg").show();
+		//触发获得焦点事件
+		$("#input_note").focus();
+		
+	});
+	
+	var url = "notebook/list.do";
+	var data = {"userId":getCookie("userId"),"type":"5"};
+	$.getJSON(url,data,function(result){
+		if(result.state==SUCCESS){
+			var notebooks = result.data;
+			//清楚全部的笔记本下拉列表选项
+			//添加新的笔记本列表选项
+			$("#add-to-notebook").empty();
+			if(notebooks.length < 1){
+				var opt = $("<option></option>").val(notebook.id).html("您没有笔记本，请添加了再来！！！");
+				$("#add-to-notebook").append(opt);
+				return;
+			}
+			//遍历所有添加标签并找到选中的notebookId放到第一个，如果没有则默认第一个选中；
+			for(var i=0;i<notebooks.length;i++){
+				var notebook = notebooks[i];
+				console.log(notebook.id == id);
+				var opt = $("<option></option>").val(notebook.id).html(notebook.name);
+				$("#add-to-notebook").append(opt);
+				if(notebook.id == id){
+					opt.attr("selected","selected");
+				}
+			}
+		}else{
+			alert(result.message);
+		}
+	});
 }
 
 /** 添加笔记本对话框 */

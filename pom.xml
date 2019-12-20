@@ -10,6 +10,30 @@
   		<artifactId>spring-webmvc</artifactId>
   		<version>3.2.8.RELEASE</version>
   	</dependency>
+  	
+  	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-core</artifactId>                
+	    <version>2.9.9</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.9.9.1</version>
+	    <exclusions>
+	        <exclusion>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	            <artifactId>jackson-annotations</artifactId>
+	        </exclusion>
+	    </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-annotations</artifactId>
+	    <version>2.9.9</version>
+	</dependency>
+ 
+  	<!-- 
   	<dependency>
   		<groupId>com.fasterxml.jackson.core</groupId>
   		<artifactId>jackson-databind</artifactId>
@@ -25,6 +49,8 @@
   		<artifactId>jackson-annotations</artifactId>
   		<version>2.2.3</version>
   	</dependency>
+  	 -->
+  	
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
