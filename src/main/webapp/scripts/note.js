@@ -448,6 +448,11 @@ function deleteNotebook(e){
 			if(lis.size()>0){
 				lis.eq(0).click();
 			}
+			//没有笔记本时将笔记区刷新空
+//			console.log("lis.size():",lis.size())
+			if(lis.size()==0){
+				$("#note-list ul").empty();
+			}
 			li.slideUp(200, function(){$(this).remove()});
 		}else{
 			alert("删除失败!");
