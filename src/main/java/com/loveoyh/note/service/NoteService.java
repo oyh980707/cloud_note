@@ -100,4 +100,12 @@ public interface NoteService {
 	 * @throws UserNotFoundException
 	 */
 	public boolean addStar(String userId, int stars) throws UserNotFoundException;
+	
+	/**
+	 * ∑÷œÌ± º«
+	 * @param noteId
+	 * @param userId
+	 * @throws NoteNotFoundException
+	 */
+	public void shareNote(String noteId, String userId) throws NoteNotFoundException;
 }

@@ -67,7 +67,7 @@
 	        cn_notebook_id=#{id}
 	</update>
 
-	<!-- 根据用户名查找 -->
+	<!-- 根据用户id查找 -->
 	<select id="findNotebooksByUserId" resultType="map">
 		select
 			cn_notebook_id as id,
@@ -82,7 +82,7 @@
 		order by
 			cn_notebook_createtime desc
 	</select>
-	<!-- 根据笔记本id查找笔记本 -->
+	<!-- 根据笔记本id查找笔记 -->
 	<select id="findNotebookById" parameterType="string" resultType="com.loveoyh.note.entity.Notebook">
 		select
 			cn_notebook_id as id,

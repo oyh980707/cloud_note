@@ -185,6 +185,7 @@ function loginAction(){
 //				console.log(user);
 				//登录成功后将userId保存在cookie里
 				addCookie("userId", user.id);
+				addCookie("name", user.name);
 				//跳转到 edit.html
 				location.href="edit.html";
 			}else{

@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.User;
 import com.loveoyh.note.service.NoteService;
 import com.loveoyh.note.util.JsonResult;
+import com.sun.net.httpserver.HttpServer;
 
 @Controller
 @RequestMapping("/note")
@@ -104,8 +107,9 @@ public class NoteController extends AbstractController{
 	}
 	
 	/**
-	 * 撤销笔记
-	 * @param userId
+	  * 撤销笔记
+	 * @param noteId
+	 * @param notebookId
 	 * @return
 	 */
 	@RequestMapping("/replay.do")
@@ -138,6 +142,14 @@ public class NoteController extends AbstractController{
 	public Object pageNote(String notebookId,Integer page){
 		List<Map<String, Object>> list = noteService.listNotes(notebookId, page);
 		return new JsonResult(list);
+	}
+	
+	@RequestMapping("/share.do")
+	@ResponseBody
+	public Object shareNote(String noteId, HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+		noteService.shareNote(noteId,user.getId());
+		return new JsonResult(SUCCESS);
 	}
 	
 }

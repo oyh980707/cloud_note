@@ -169,7 +169,7 @@ public class UserController extends AbstractController{
 		/*
 		 * 三种保存方法
 		 */
-		//1. transferTo(目标文件) 将文件爱你直接保存到目标文件,可以处理大文件
+		//1. transferTo(目标文件) 将文件直接保存到目标文件,可以处理大文件
 		//2. userfile1.getBytes() 获取文件的全部数据  将文件全部读取到内存,适合处理小文件
 		//3. userfile1.getInputStream() 获取上载文件的流 适合处理大文件
 		
@@ -217,7 +217,7 @@ public class UserController extends AbstractController{
 	}
 	
 	/**
-	 * 用户名不存在异常捕获
+	 * 用户不存在异常捕获
 	 * @param e
 	 * @return
 	 */

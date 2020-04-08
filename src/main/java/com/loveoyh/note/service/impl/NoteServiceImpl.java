@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.loveoyh.note.dao.NoteDAO;
 import com.loveoyh.note.dao.NotebookDAO;
+import com.loveoyh.note.dao.ShareDAO;
 import com.loveoyh.note.dao.StarsDAO;
 import com.loveoyh.note.dao.UserDAO;
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.Share;
 import com.loveoyh.note.entity.Stars;
 import com.loveoyh.note.entity.User;
 import com.loveoyh.note.service.NoteService;
@@ -23,6 +25,8 @@ import com.loveoyh.note.service.ex.NoteNotFoundException;
 import com.loveoyh.note.service.ex.NotebookNotFoundException;
 import com.loveoyh.note.service.ex.RemoveException;
 import com.loveoyh.note.service.ex.UserNotFoundException;
+
+import sun.security.provider.SHA;
 
 @Service("noteService")
 @Transactional
@@ -35,6 +39,8 @@ public class NoteServiceImpl implements NoteService {
 	private UserDAO userDAO;
 	@Resource
 	private StarsDAO starsDAO;
+	@Resource
+	private ShareDAO shareDAO;
 	@Value("#{jdbc.pageSize}")
 	private int pageSize;
 	
@@ -53,7 +59,7 @@ public class NoteServiceImpl implements NoteService {
 		if(n!=1){
 			throw new NotebookNotFoundException("没有笔记本");
 		}
-		return noteDAO.findNotes(null, notebookId, "1");
+		return noteDAO.findNotes(null, notebookId, "5");
 	}
 	
 //	@Transactional
@@ -93,7 +99,7 @@ public class NoteServiceImpl implements NoteService {
 		note.setUserId(userId);
 		note.setNotebookId(notebookId);
 		note.setNoteStatusId("1");
-		note.setNoteTypeId(null);
+		note.setNoteTypeId("5");
 		note.setTitle(title);
 		note.setBody("");
 		note.setCreatetime(System.currentTimeMillis());
@@ -174,7 +180,7 @@ public class NoteServiceImpl implements NoteService {
 		Note data = new Note();
 		data.setId(note.getId());
 		data.setLastModifyTime(System.currentTimeMillis());
-		data.setNoteStatusId("0");
+		data.setNoteTypeId("2");
 		int n = noteDAO.updateNote(data);
 		if(n!=1){
 			throw new NoteNotFoundException("删除失败!");
@@ -190,7 +196,7 @@ public class NoteServiceImpl implements NoteService {
 		if(user==null){
 			throw new UserNotFoundException("用户不存在");
 		}
-		List<Map<String, Object>> list = noteDAO.findNotes(userId, null, "0");
+		List<Map<String, Object>> list = noteDAO.findNotes(userId, null, "2");
 		return list;
 	}
 
@@ -215,7 +221,7 @@ public class NoteServiceImpl implements NoteService {
 		data.setId(note.getId());
 		data.setNotebookId(notebookId);
 		data.setLastModifyTime(System.currentTimeMillis());
-		data.setNoteStatusId("1");
+		data.setNoteTypeId("5");
 		n = noteDAO.updateNote(data);
 		if(n!=1){
 			throw new NoteNotFoundException("撤销失败!");
@@ -305,5 +311,48 @@ public class NoteServiceImpl implements NoteService {
 		int start = page * pageSize;
 		return noteDAO.findNotesByPage(notebookId, start, pageSize, "cn_note");
 	}
-
+	
+	public void shareNote(String noteId, String userId) throws NoteNotFoundException {
+		if(noteId==null || noteId.trim().isEmpty()){
+			throw new NoteNotFoundException("笔记ID错误");
+		}
+		Note note = noteDAO.findNoteById(noteId);
+		if(note == null){
+			throw new NoteNotFoundException("没有笔记");
+		}
+		Share share = new Share();
+		share.setId(UUID.randomUUID().toString());
+		share.setNoteId(note.getId());
+		share.setTitle(note.getTitle());
+		share.setBody(note.getBody());
+		shareDAO.save(share);
+		//增加星星
+		//检查是否有星
+		Stars star = starsDAO.findSatrsByUserId(userId);
+		if(star==null){//如果没有星星
+			String id = UUID.randomUUID().toString();
+			star = new Stars(id, userId, 10);
+			int n = starsDAO.insertStars(star);
+			if(n!=1){
+				throw new RuntimeException("失败");
+			}
+		}else{//如果有星星,就在现有的星星中增加星星
+			int n = star.getStars() + 10;
+			if(n<0){
+				// n=0
+				throw new RuntimeException("扣分太多");
+			}
+			star = new Stars();
+			star.setStars(n);
+			star.setUserId(userId);
+			n = starsDAO.updateStars(star);
+			if(n!=1){
+				throw new RuntimeException("失败");
+			}
+		}
+		//更改笔记类型
+		Note type = new Note();
+		type.setNoteTypeId("3");
+		noteDAO.updateNote(type);
+	}
 }

@@ -29,7 +29,7 @@ public interface NoteDAO {
 	
 	public int deleteNotes(@Param("ids")String... ids);
 	
-	public List<Map<String, Object>> findNotes(@Param("userId")String userId,@Param("notebookId")String notebookId,@Param("statusId")String statusId);
+	public List<Map<String, Object>> findNotes(@Param("userId")String userId,@Param("notebookId")String notebookId,@Param("noteType")String noteType);
 	
 	public List<Map<String, Object>> findNotesByPage(@Param("notebookId")String notebookId,@Param("start")int start,@Param("pageSize")int pageSize,@Param("table")String table);
 	

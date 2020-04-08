@@ -59,6 +59,8 @@ $(function(){
 	$("#note-list").on("click",".btn_delete",showDeleteNoteDialog);
 	//监听笔记删除点击按钮确认事件
 	$("#can").on("click",".delete-note",deleteNote);
+	//分享笔记
+	$("#note-list").on("click",".btn_share",shareNote);
 	
 	//监听回收站按钮
 	$("#trash_button").click(showTrashBin);
@@ -75,6 +77,10 @@ $(function(){
 	//回收站彻底删除按钮监听事件
 	$("#can").on("click",".delete-trash-note",removeNote);
 	$("#can").on("click",".delete-trash-notebook",removeNotebook);
+	
+	
+	
+	
 	
 	//心跳检测
 	startHeartBeat();
@@ -231,6 +237,22 @@ function replayNote(){
 			closeDialog();
 		}else{
 			alert("恢复失败!");
+		}
+	});
+}
+
+/** 分享笔记 */
+function shareNote(){
+	var id = $(this).parent().parent().parent().parent().data("noteId");
+	var url = "note/share.do";
+	console.log(id)
+	alert(id);
+	var data = {noteId: id};
+	$.post(url,data,function(result){
+		if(result.state==SUCCESS){
+			alert("分享成功");
+		}else{
+			alert("分享失败!");
 		}
 	});
 }
@@ -959,7 +981,7 @@ var noteTemplate = '<li class="online note">'+
 						'<div class="note_menu" tabindex="-1">'+
 							'<dl>'+
 								'<dt><button type="button" class="btn btn-default btn-xs btn_move" title="移动至..."><i class="fa fa-random"></i></button></dt>'+
-								'<dt><button type="button" class="btn btn-default btn-xs btn_share" title="分享"><i class="fa fa-sitemap"></i></button></dt>'+
+								'<dt><button id="shareNote" type="button" class="btn btn-default btn-xs btn_share" title="分享"><i class="fa fa-sitemap"></i></button></dt>'+
 								'<dt><button type="button" class="btn btn-default btn-xs btn_delete" title="删除"><i class="fa fa-times"></i></button></dt>'+
 							'</dl>'+
 						'</div>'+
