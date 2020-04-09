@@ -34,4 +34,8 @@ public interface NoteDAO {
 	public List<Map<String, Object>> findNotesByPage(@Param("notebookId")String notebookId,@Param("start")int start,@Param("pageSize")int pageSize,@Param("table")String table);
 	
 	public Notebook addNotebook(Notebook notebook);
+	
+	public List<Note> findNotesByKeywords(String keywords);
+	
+	
 }

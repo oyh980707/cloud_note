@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -17,6 +18,7 @@ import com.loveoyh.note.dao.ShareDAO;
 import com.loveoyh.note.dao.StarsDAO;
 import com.loveoyh.note.dao.UserDAO;
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.Notebook;
 import com.loveoyh.note.entity.Share;
 import com.loveoyh.note.entity.Stars;
 import com.loveoyh.note.entity.User;
@@ -354,5 +356,25 @@ public class NoteServiceImpl implements NoteService {
 		Note type = new Note();
 		type.setNoteTypeId("3");
 		noteDAO.updateNote(type);
+	}
+
+	public List<Note> searchNote(String keywords) {
+		return noteDAO.findNotesByKeywords(keywords);
+	}
+
+	public Notebook findNotebookByNoteId(String noteId) throws NoteNotFoundException {
+		if(noteId==null || noteId.trim().isEmpty()){
+			throw new NoteNotFoundException("笔记ID错误");
+		}
+		Note note = noteDAO.findNoteById(noteId);
+		if(note == null){
+			throw new NoteNotFoundException("没有笔记");
+		}
+		Notebook notebook = notebookDAO.findNotebookById(note.getNotebookId());
+		notebook.setCreatetime(null);
+		notebook.setNotebookDesc(null);
+		notebook.setNotebookTypeId(null);
+		notebook.setUserId(null);
+		return notebook;
 	}
 }

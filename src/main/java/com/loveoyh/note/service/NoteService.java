@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.Notebook;
 import com.loveoyh.note.service.ex.NoteNotFoundException;
 import com.loveoyh.note.service.ex.NotebookNotFoundException;
 import com.loveoyh.note.service.ex.UserNotFoundException;
@@ -108,4 +109,19 @@ public interface NoteService {
 	 * @throws NoteNotFoundException
 	 */
 	public void shareNote(String noteId, String userId) throws NoteNotFoundException;
+	
+	/**
+	 * 搜索笔记
+	 * @param keywords
+	 * @return
+	 */
+	public List<Note> searchNote(String keywords);
+	
+	/**
+	 * 根据笔记id查询所属笔记本
+	 * @param noteId
+	 * @return
+	 * @throws NoteNotFoundException
+	 */
+	public Notebook findNotebookByNoteId(String noteId) throws NoteNotFoundException;
 }

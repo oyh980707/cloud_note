@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.loveoyh.note.dao.NoteDAO;
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.Notebook;
 import com.loveoyh.note.entity.User;
 import com.loveoyh.note.service.NoteService;
 import com.loveoyh.note.util.JsonResult;
@@ -144,12 +146,42 @@ public class NoteController extends AbstractController{
 		return new JsonResult(list);
 	}
 	
+	/**
+	 * 分享笔记
+	 * @param noteId
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping("/share.do")
 	@ResponseBody
 	public Object shareNote(String noteId, HttpSession session) {
 		User user = (User) session.getAttribute("loginUser");
 		noteService.shareNote(noteId,user.getId());
 		return new JsonResult(SUCCESS);
+	}
+	
+	/**
+	 * 搜索笔记
+	 * @param keywords
+	 * @return
+	 */
+	@RequestMapping("/search.do")
+	@ResponseBody
+	public Object searchNote(String keywords) {
+		List<Note> notes = noteService.searchNote(keywords);
+		return new JsonResult(notes);
+	}
+	
+	/**
+	 * 通过noteId查找notebook
+	 * @param noteId
+	 * @return
+	 */
+	@RequestMapping("/findNotebook.do")
+	@ResponseBody
+	public Object findNotebook(String noteId) {
+		Notebook notebook = noteService.findNotebookByNoteId(noteId);
+		return new JsonResult(notebook);
 	}
 	
 }

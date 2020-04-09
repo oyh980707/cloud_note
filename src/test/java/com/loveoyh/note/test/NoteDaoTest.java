@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.loveoyh.note.dao.NoteDAO;
 import com.loveoyh.note.entity.Note;
+import com.loveoyh.note.entity.Notebook;
 import com.sun.jmx.snmp.Timestamp;
 
 public class NoteDaoTest extends BaseTest {
@@ -120,4 +121,19 @@ public class NoteDaoTest extends BaseTest {
 		}
 	}
 	
+	@Test
+	public void testFindNotesByKeywords() {
+		String keywords = "o";
+		List<Note> list = dao.findNotesByKeywords(keywords);
+		for(Note note : list) {
+			System.out.println(note);
+		}
+	}
+	
+	@Test
+	public void testFindNotebookByNoteId() {
+		String noteId = "a0aeece7-ad79-4a57-90d2-d78966182a8b";
+		Notebook notebook = dao.findNotebookByNoteId(noteId);
+		System.out.println(notebook);
+	}
 }

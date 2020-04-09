@@ -7,8 +7,8 @@ $(function(){
 //	var userId = getCookie("userId");
 //	console.log(userId);
 	//在document对象中初始化分页页数,存储分页页数
-	$(document).data("notebookPage",0);
-	$(document).data("notePage",0);
+//	$(document).data("notebookPage",0);
+//	$(document).data("notePage",0);
 	
 	//网页加载以后,立即读取笔记本列表
 	loadNotebooks();
@@ -78,8 +78,30 @@ $(function(){
 	$("#can").on("click",".delete-trash-note",removeNote);
 	$("#can").on("click",".delete-trash-notebook",removeNotebook);
 	
+	//==========================搜索笔记=================================
+	//搜索笔记实现
+	$("#search_note").keydown(showSearchList);
+	//绑定搜索笔记结果列表区域的点击事件
+	$("#search_list").on("click",".note",loadNotebookAndNote);
+	//点击保存按钮绑定事件
+	$('#save_note').on('click', updateNote);
 	
+	//绑定笔记子菜单的触发时间
+	$("#search_list").on("click",".btn-note-menu",showNoteMenu);
+	//绑定document点击事件,用于点击其他位置收起笔记菜单
+	$(document).click(hideNoteMenu);
 	
+	//点击菜单,然后弹出菜单
+	$("#search_list").on("click",".btn_move",showMoveNoteDialog);
+	//监听移动笔记对话框中的确定按钮
+	$("#can").on("click",".move-note",moveNote);
+	
+	//监听笔记中的删除按钮点击弹框事件
+	$("#search_list").on("click",".btn_delete",showDeleteNoteDialog);
+	//监听笔记删除点击按钮确认事件
+	$("#can").on("click",".delete-note",deleteNote);
+	//分享笔记
+	$("#search_list").on("click",".btn_share",shareNote);
 	
 	
 	//心跳检测
@@ -88,51 +110,76 @@ $(function(){
 	//浏览器调试过程调用方法
 //	$("#add_notebook").click(demo);
 });
+
+/** 展示搜索结果 */
+function showSearchList(event){
+	if(event.keyCode == 13){
+		let keywords = $("#search_note").val();
+		var url = "note/search.do";
+		var data = {"keywords":keywords};
+		$.post(url,data,function(result){
+			if(result.state==SUCCESS){
+				let notes = result.data;
+				//清楚搜索框内容
+				$("#search_note").val("").blur();
+				//关闭其他面版 打开搜索结果列表
+				closePanel();
+				$("#search_list").show();
+				showNotes("search_list",notes);
+				$("#notebook-list ul").empty();
+			}else{
+				alert(result.message);
+			}
+		});
+	}
+}
+
+
 /** 笔记本分页加载功能 */
-function loadPagedNotebooks(){
-	var page = $(document).data("notebookPage");
-	var userId = getCookie("userId");
-	//从服务器中获取数据
-	var url = "notebook/page.do";
-	var data = {"userId":userId,"page":page};
-	$.getJSON(url,data,function(result){
-		if(result.state==SUCCESS){
-			var notebooks = result.data;
-			showPagedNotebooks(notebooks,page);
-			$(document).data("notebookPage",page+1);
-		}else{
-			alert(result.message);
-		}
-	});
-}
+//function loadPagedNotebooks(){
+//	var page = $(document).data("notebookPage");
+//	var userId = getCookie("userId");
+//	//从服务器中获取数据
+//	var url = "notebook/page.do";
+//	var data = {"userId":userId,"page":page};
+//	$.getJSON(url,data,function(result){
+//		if(result.state==SUCCESS){
+//			var notebooks = result.data;
+//			showPagedNotebooks(notebooks,page);
+//			$(document).data("notebookPage",page+1);
+//		}else{
+//			alert(result.message);
+//		}
+//	});
+//}
 /** 笔记本分页加载笔记本 */
-function showPagedNotebooks(notebooks,page){
-	var ul = $("#notebook-list ul");
-	if(page==0){
-		ul.empty();
-	}else{
-		//删除more
-		ul.find(".more").remove();
-	}
-	
-	for(var i=0;i<notebooks.length;i++){
-		var notebook = notebooks[i];
-		var li = notebookTemplate.replace("[name]",notebook.name);
-		li = $(li);
-		// 将 notebook.id 绑定到 li
-		li.data("notebookId",notebook.id);
-		
-		ul.append(li);
-	}
-	//服务器分页查询的每页设置的为4,所以小于4则没有更多了
-	if(notebooks.length<4){
-		var li = $(moreNotebookTemplate.replace("[info]","没有更多了..."));
-		li.find("i").remove();
-		ul.append(li);
-		return ;
-	}
-	ul.append(moreNotebookTemplate.replace("[info]","加载更多..."));
-}
+//function showPagedNotebooks(notebooks,page){
+//	var ul = $("#notebook-list ul");
+//	if(page==0){
+//		ul.empty();
+//	}else{
+//		//删除more
+//		ul.find(".more").remove();
+//	}
+//	
+//	for(var i=0;i<notebooks.length;i++){
+//		var notebook = notebooks[i];
+//		var li = notebookTemplate.replace("[name]",notebook.name);
+//		li = $(li);
+//		// 将 notebook.id 绑定到 li
+//		li.data("notebookId",notebook.id);
+//		
+//		ul.append(li);
+//	}
+//	//服务器分页查询的每页设置的为4,所以小于4则没有更多了
+//	if(notebooks.length<4){
+//		var li = $(moreNotebookTemplate.replace("[info]","没有更多了..."));
+//		li.find("i").remove();
+//		ul.append(li);
+//		return ;
+//	}
+//	ul.append(moreNotebookTemplate.replace("[info]","加载更多..."));
+//}
 
 /** 心跳检测,防止session过期,检测用户是否在线 */
 function startHeartBeat(){
@@ -141,7 +188,7 @@ function startHeartBeat(){
 		$.getJSON(url,function(result){
 			console.log(result.message);
 		});
-	}, 5000)
+	}, 1000*60*10)
 }
 
 /** 彻底删除笔记 */
@@ -235,6 +282,7 @@ function replayNote(){
 			}
 			li.slideUp(200, function(){$(this).remove()});
 			closeDialog();
+			tip("恢复成功!");
 		}else{
 			alert("恢复失败!");
 		}
@@ -245,12 +293,10 @@ function replayNote(){
 function shareNote(){
 	var id = $(this).parent().parent().parent().parent().data("noteId");
 	var url = "note/share.do";
-	console.log(id)
-	alert(id);
 	var data = {noteId: id};
 	$.post(url,data,function(result){
 		if(result.state==SUCCESS){
-			alert("分享成功");
+			tip("分享成功");
 		}else{
 			alert("分享失败!");
 		}
@@ -326,6 +372,7 @@ function replayNotebook(notebookId){
 			
 			newLi.click();
 			
+			tip("恢复成功!");
 		}else{
 			alert("恢复失败!");
 		}
@@ -360,8 +407,8 @@ function loadReplayOpations(){
 function showTrashBin(){
 	var btn = $(this);
 	//切换回收站笔记和未被删除的笔记
+	closePanel();
 	$('#trash-bin').show();
-	$('#note-list').hide();
 	//删除被选定的笔记本的样式,找到相邻上一个元素里的a元素的checked将其删除
 	btn.parent().prev().find("a").removeClass("checked");
 	
@@ -446,6 +493,7 @@ function deleteNote(){
 			}
 			li.slideUp(200, function(){$(this).remove()});
 			closeDialog();
+			tip("删除成功！");
 		}else{
 			alert("移动失败!");
 		}
@@ -520,6 +568,7 @@ function moveNote(){
 			}
 			li.slideUp(200, function(){$(this).remove()});
 			closeDialog();
+			tip("移动成功!");
 		}else{
 			alert("移动失败!");
 		}
@@ -596,6 +645,9 @@ function updateNote(){
 	
 	var url = "note/update.do";
 	var note = $(document).data("note");
+	if(note==null){
+		return ;
+	}
 	var modified = false;
 	var data = {"noteId":note.id};
 	var title = $("#input_note_title").val();
@@ -623,6 +675,7 @@ function updateNote(){
                 var a = $(li).find('a');
                 a.addClass('checked');
                 l.prepend(a);
+                tip("保存成功!");
             }else{
                 alert(result.mesage);
             }
@@ -801,6 +854,40 @@ function loadNote(){
 		}
 	});
 }
+
+/** 加载笔记和对应的笔记本 */
+function loadNotebookAndNote(){
+	//加载笔记本
+	var li = $(this);
+	//在所属笔记本上绑定选定效果
+	li.parent().find("a").removeClass("checked");
+	li.find("a").addClass("checked");
+	
+	var url = "note/findNotebook.do";
+	var data = {noteId:li.data("noteId")};
+	$.getJSON(url,data,function(result){
+		if(result.state==SUCCESS){
+			var notebook = result.data;
+			//展示在笔记本显示区域
+			showNotebooks([notebook]);
+		}else{
+			alert(result.message);
+		}
+	});
+	
+	//加载笔记
+	url = "note/load.do";
+	data = {noteId:li.data("noteId")};
+	$.getJSON(url,data,function(result){
+		if(result.state==SUCCESS){
+			var note = result.data;
+			showNote(note);
+		}else{
+			alert(result.message);
+		}
+	});
+}
+
 /** 渲染笔记的全部内容 */
 function showNote(note){
 	//显示笔记标题
@@ -884,10 +971,11 @@ function showPagedNotes(notes,page){
 	}
 	ul.append(moreNoteTemplate.replace("[info]","加载更多..."));
 }
+
 /** 笔记本项目点击事件处理方法,加载全部笔记 */
 function loadNotes(){
 	//关闭回收站 打开笔记本列表
-	$("#trash-bin").hide();
+	closePanel();
 	$("#note-list").show();
 	//清除标题和内容
 	$("#input_note_title").val("");
@@ -909,17 +997,18 @@ function loadNotes(){
 			var notes = result.data;
 //			console.log(notes);
 			//判断是否有笔记
-			showNotes(notes);
+			showNotes("note-list",notes);
 		}else{
 			alert(result.message)
 		}
 	});
 }
 /** 将笔记列表信息显示到屏幕上 */
-function showNotes(notes){
+function showNotes(location,notes){
 //	console.log(notes);
 	//将每个笔记对象显示到屏幕的ul区域
-	var ul = $("#note-list ul");
+	let id = "#"+location+" ul";
+	var ul = $(id);
 	ul.empty();
 	for(var i=0;i<notes.length;i++){
 		var note = notes[i];
@@ -968,6 +1057,32 @@ function showNotebooks(notebooks){
 	}
 }
 
+/** 关闭所有的面板 */
+function closePanel(){
+	$("#trash-bin").hide();
+	$("#note-list").hide();
+	$("#search_list").hide();
+}
+
+/**
+ * 弹窗提示
+ * @param message 提示信息
+ * @param style 样式
+ * @param time 时间
+ * @returns
+ */
+function tip(message, style, time)
+{
+    style = (style === undefined) ? 'alert-success' : style;
+    time = (time === undefined) ? 500 : time;
+    $('<div>')
+        .appendTo('body')
+        .addClass('alert ' + style)
+        .html(message)
+        .show()
+        .delay(time)
+        .fadeOut();
+};
 
 var notebookTemplate = '<li class="online notebook">'+
 							'<a><i class="fa fa-book" title="online" rel="tooltip-bottom"></i>[name]</a>'+
