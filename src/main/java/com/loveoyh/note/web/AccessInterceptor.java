@@ -22,7 +22,6 @@ public class AccessInterceptor implements HandlerInterceptor {
 		
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("loginUser");
-		System.out.println(user);
 		/*
 		 * 如果没有登录就返回错误的json消息
 		 * 如果登陆了就放过请求

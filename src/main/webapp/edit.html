@@ -17,6 +17,8 @@
         <link rel="stylesheet" href="styles/prettify.css"/>
 		<!-- Ueditor编辑器CSS -->
 		<link href="styles/umeditor.min.css" type="text/css" rel="stylesheet">
+		<!-- 弹窗提示样式 -->
+		<link rel="stylesheet" href="styles/alert_tip.css"/>
     	<style type="text/css">
     		#delete_notebook{
     			display: none;
@@ -38,44 +40,6 @@
     			line-height: 60px;
     		}
     		
-    		/* ========提示弹窗样式==========*/
-    		.alert {
-				display: none;
-				position: fixed;
-				top: 5%;
-				left: 50%;
-				min-width: 300px;
-				max-width: 600px;
-				transform: translate(-50%,-50%);
-				z-index: 99999;
-				text-align: center;
-				padding: 15px;
-				border-radius: 3px;
-			}
-			
-			.alert-success {
-			    color: #3c763d;
-			    background-color: #dff0d8;
-			    border-color: #d6e9c6;
-			}
-			
-			.alert-info {
-			    color: #31708f;
-			    background-color: #d9edf7;
-			    border-color: #bce8f1;
-			}
-			
-			.alert-warning {
-			    color: #8a6d3b;
-			    background-color: #fcf8e3;
-			    border-color: #faebcc;
-			}
-			
-			.alert-danger {
-			    color: #a94442;
-			    background-color: #f2dede;
-			    border-color: #ebccd1;
-			}
     	</style>
     </head>
     <body class="animated fadeIn">
@@ -104,14 +68,14 @@
                     <ul class="dropdown-menu animated flipInX pull-right" role="menu">
                         <li><a href="Change_password.html"><i class="fa fa-user"></i> 修改密码</a></li>
                         <li class="divider"></li>
-                        <li><a id="logout" href="#" ><i class="fa fa-sign-out"></i> 退出登录</a></li>
+                        <li><a id="logout"><i class="fa fa-sign-out"></i> 退出登录</a></li>
                     </ul>
                 </div>
             </div>
             <form class="form-inline" onsubmit="return false;">
                 <button type="button" class="btn btn-default btn-expand-search"><i class="fa fa-search"></i></button>
                 <div class="toggle-search">
-                    <input type="text" class="form-control" placeholder="搜索笔记" id='search_note'>
+                    <input type="text" class="form-control" placeholder="搜索笔记" id='search_note' autocomplete="off">
                     <button type="button" class="btn btn-default btn-collapse-search"><i class="fa fa-times"></i></button>
                 </div>
             </form>
@@ -334,10 +298,6 @@
 			</div>
         </footer>
         
-        <!-- 提示弹框 START -->
-        
-        <!-- 提示弹框 END -->
-        
 		<script type="text/javascript">
 			//加载DOM之后处理页面高度
 			function get_dom(e){
@@ -400,7 +360,9 @@
 			
 			//退出登录
 			$("#logout").click(function(){
-				location.href="/cloud_note/log_in.html";
+				$.post("user/logout.do",{},function(){
+					window.location.reload();
+				});
 			});
 		</script>
 		</body>		

@@ -43,4 +43,12 @@ public class UserDaoTest extends BaseTest{
 		int n = dao.addUser(user);
 		System.out.println(n);
 	}
+	
+	@Test
+	public void testUpdatePassword(){
+		String userId = "adea4174-d833-42cf-95cd-1da55fba75f5";
+		String password = DigestUtils.md5Hex(salt+"123456");
+		int n = dao.updatePassword(userId, password);
+		System.out.println(n);
+	}
 }

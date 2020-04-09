@@ -112,5 +112,39 @@ public class UserServiceImpl implements UserService{
 		}
 		return user;
 	}
+	
+	/**
+	 * 修改密码方法实现
+	 */
+	public void changePassword(String userId, String lastPassword, String password, String confirm)
+			throws UserNotFoundException, PasswordException {
+		User user = userDAO.findUserById(userId);
+		if(user == null) {
+			throw new UserNotFoundException("用户不存在!");
+		}
+		/*
+		 * 检查密码
+		 */
+		if(password == null || password.trim().isEmpty()){
+			throw new PasswordException("密码为空");
+		}
+		//检查两次输入密码是否一致
+		if(!password.equals(confirm)){
+			throw new PasswordException("密码不一致");
+		}
+		//密码加密处理
+		lastPassword = DigestUtils.md5Hex(salt+lastPassword);
+		if(!user.getPassword().equals(lastPassword)) {
+			throw new PasswordException("原密码不正确!");
+		}
+		//密码加密处理
+		password = DigestUtils.md5Hex(salt+password);
+		int n = userDAO.updatePassword(userId,password);
+		if(n!=1) {
+			throw new PasswordException("修改失败!");
+		}
+	}
+	
+	
 
 }

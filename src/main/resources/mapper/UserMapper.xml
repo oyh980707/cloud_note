@@ -48,4 +48,14 @@
 			cn_user_id = #{userId}
 	</select>
 	
+	<!-- 更改密码 -->
+	<!-- int updatePassword(String userId, String password) -->
+	<update id="updatePassword" parameterType="string">
+		update
+			cn_user
+		set
+			cn_user_password = #{password}
+		where
+			cn_user_id = #{userId}
+	</update>
 </mapper>

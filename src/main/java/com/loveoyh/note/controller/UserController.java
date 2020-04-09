@@ -83,7 +83,20 @@ public class UserController extends AbstractController{
 	}
 	
 	/**
-	 * 登录
+	 * 登出
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/logout.do")
+	@ResponseBody
+	public Object logout(HttpSession session) {
+		session.setAttribute("loginUser", null);
+		return new JsonResult();
+	}
+	
+	
+	/**
+	 * 注册
 	 * @param name
 	 * @param nick
 	 * @param password
@@ -97,6 +110,31 @@ public class UserController extends AbstractController{
 		user = userService.regist(name, nick, password, confirm);
 		return new JsonResult(user);
 	}
+	
+	/**
+	 * 修改密码
+	 * @param userId
+	 * @param lastPassword
+	 * @param password
+	 * @param confirm
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/changePassword.do")
+	@ResponseBody
+	public Object changePassword(String userId, String lastPassword, String password, String confirm,HttpSession session) {
+		User user = (User)session.getAttribute("loginUser");
+		if(user.getId().equals(userId)) {
+			userService.changePassword(userId,lastPassword,password,confirm);			
+		}else {
+			throw new RuntimeException("修改用户与登录用户不一致!");
+		}
+		session.setAttribute("loginUser", null);
+		return new JsonResult();
+	}
+	
+	
+	
 	
 	/**
 	 * 心跳检测,检查用户是否在线,防止session过期

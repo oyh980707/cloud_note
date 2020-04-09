@@ -33,4 +33,15 @@ public interface UserService {
 	 */
 	public User regist(String name,String nick,String password,String confirm) throws UserNameException,PasswordException;
 	
+	/**
+	 * ÐÞ¸ÄÃÜÂë
+	 * @param userId
+	 * @param lastPassword
+	 * @param password
+	 * @param confirm
+	 * @throws UserNotFoundException
+	 * @throws PasswordException
+	 */
+	public void changePassword(String userId, String lastPassword, String password, String confirm) throws UserNotFoundException,PasswordException;
+	
 }

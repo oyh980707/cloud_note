@@ -129,11 +129,4 @@ public class NoteDaoTest extends BaseTest {
 			System.out.println(note);
 		}
 	}
-	
-	@Test
-	public void testFindNotebookByNoteId() {
-		String noteId = "a0aeece7-ad79-4a57-90d2-d78966182a8b";
-		Notebook notebook = dao.findNotebookByNoteId(noteId);
-		System.out.println(notebook);
-	}
 }
