@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -14,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.loveoyh.note.dao.NoteDAO;
 import com.loveoyh.note.dao.NotebookDAO;
-import com.loveoyh.note.dao.ShareDAO;
+import com.loveoyh.note.dao.ActivityDAO;
 import com.loveoyh.note.dao.StarsDAO;
 import com.loveoyh.note.dao.UserDAO;
 import com.loveoyh.note.entity.Note;
 import com.loveoyh.note.entity.Notebook;
-import com.loveoyh.note.entity.Share;
 import com.loveoyh.note.entity.Stars;
 import com.loveoyh.note.entity.User;
 import com.loveoyh.note.service.NoteService;
@@ -42,7 +40,7 @@ public class NoteServiceImpl implements NoteService {
 	@Resource
 	private StarsDAO starsDAO;
 	@Resource
-	private ShareDAO shareDAO;
+	private ActivityDAO shareDAO;
 	@Value("#{jdbc.pageSize}")
 	private int pageSize;
 	
@@ -61,7 +59,7 @@ public class NoteServiceImpl implements NoteService {
 		if(n!=1){
 			throw new NotebookNotFoundException("没有笔记本");
 		}
-		return noteDAO.findNotes(null, notebookId, "5");
+		return noteDAO.findNotesByNotebookId(notebookId);
 	}
 	
 //	@Transactional
@@ -322,12 +320,6 @@ public class NoteServiceImpl implements NoteService {
 		if(note == null){
 			throw new NoteNotFoundException("没有笔记");
 		}
-		Share share = new Share();
-		share.setId(UUID.randomUUID().toString());
-		share.setNoteId(note.getId());
-		share.setTitle(note.getTitle());
-		share.setBody(note.getBody());
-		shareDAO.save(share);
 		//增加星星
 		//检查是否有星
 		Stars star = starsDAO.findSatrsByUserId(userId);
@@ -354,7 +346,9 @@ public class NoteServiceImpl implements NoteService {
 		}
 		//更改笔记类型
 		Note type = new Note();
-		type.setNoteTypeId("3");
+		type.setId(noteId);
+		type.setNoteTypeId("4");
+		type.setLastModifyTime(System.currentTimeMillis());
 		noteDAO.updateNote(type);
 	}
 
@@ -376,5 +370,29 @@ public class NoteServiceImpl implements NoteService {
 		notebook.setNotebookTypeId(null);
 		notebook.setUserId(null);
 		return notebook;
+	}
+
+	public void collect(String userId, String noteId) throws UserNotFoundException, NoteNotFoundException {
+		if(userId==null || userId.trim().isEmpty()){
+			throw new UserNotFoundException("ID不能空");
+		}
+		User user = userDAO.findUserById(userId);
+		if(user==null){
+			throw new UserNotFoundException("用户不存在");
+		}
+		if(noteId==null || noteId.trim().isEmpty()){
+			throw new NoteNotFoundException("笔记ID错误");
+		}
+		Note note = noteDAO.findNoteById(noteId);
+		if(note == null){
+			throw new NoteNotFoundException("没有笔记");
+		}
+		
+		//收藏笔记:将查询的笔记实例，修改其所属用户、笔记Id和笔记类型
+		note.setId(UUID.randomUUID().toString());
+		note.setNoteTypeId("1");
+		note.setUserId(userId);
+		
+		noteDAO.addNote(note);
 	}
 }

@@ -15,7 +15,6 @@ $(function (){
  * @returns
  */
 function showUserName(){
-	alert("1");
 	let name = getCookie("name");
 	$("#display_user_name").text(name);
 }

@@ -7,12 +7,12 @@
 	<select id="findNotesByNotebookId" parameterType="string" resultType="map">
 		select
 			cn_note_id as id,
-			cn_note_title as title
+			cn_note_title as title,
+			cn_note_type_id as noteTypeId
 		from
 			cn_note
 		where
-			cn_notebook_id = #{notebookId} and
-			cn_note_status_id = '1'
+			cn_notebook_id = #{notebookId}
 		order by
 			cn_note_last_modify_time desc
 	</select>
@@ -188,7 +188,8 @@
 		from
 			cn_note
 		where
-			cn_note_title like "%"#{keywords}"%"
+			cn_note_title like "%"#{keywords}"%" and
+			cn_note_type_id = 4
 	</select>
 	
 </mapper>

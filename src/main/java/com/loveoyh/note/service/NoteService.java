@@ -124,4 +124,11 @@ public interface NoteService {
 	 * @throws NoteNotFoundException
 	 */
 	public Notebook findNotebookByNoteId(String noteId) throws NoteNotFoundException;
+	
+	/**
+	 *  ’≤ÿ± º«
+	 * @param userId
+	 * @param noteId
+	 */
+	public void collect(String userId, String noteId) throws UserNotFoundException, NoteNotFoundException;
 }

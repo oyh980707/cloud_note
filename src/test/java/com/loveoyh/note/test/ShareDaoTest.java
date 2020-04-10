@@ -6,16 +6,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.loveoyh.note.dao.PostDAO;
-import com.loveoyh.note.dao.ShareDAO;
+import com.loveoyh.note.dao.ActivityDAO;
 import com.loveoyh.note.entity.Post;
 import com.loveoyh.note.entity.Share;
 
 public class ShareDaoTest extends BaseTest{
-	private ShareDAO dao;
+	private ActivityDAO dao;
 	
 	@Before
 	public void init(){
-		dao = ctx.getBean("shareDAO",ShareDAO.class);
+		dao = ctx.getBean("shareDAO",ActivityDAO.class);
 	}
 	
 	@Test

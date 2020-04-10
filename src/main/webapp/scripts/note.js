@@ -82,26 +82,13 @@ $(function(){
 	//搜索笔记实现
 	$("#search_note").keydown(showSearchList);
 	//绑定搜索笔记结果列表区域的点击事件
-	$("#search_list").on("click",".note",loadNotebookAndNote);
-	//点击保存按钮绑定事件
-	$('#save_note').on('click', updateNote);
+	$("#search_list").on("click",".note",loadNote);
 	
 	//绑定笔记子菜单的触发时间
 	$("#search_list").on("click",".btn-note-menu",showNoteMenu);
-	//绑定document点击事件,用于点击其他位置收起笔记菜单
-	$(document).click(hideNoteMenu);
 	
-	//点击菜单,然后弹出菜单
-	$("#search_list").on("click",".btn_move",showMoveNoteDialog);
-	//监听移动笔记对话框中的确定按钮
-	$("#can").on("click",".move-note",moveNote);
-	
-	//监听笔记中的删除按钮点击弹框事件
-	$("#search_list").on("click",".btn_delete",showDeleteNoteDialog);
-	//监听笔记删除点击按钮确认事件
-	$("#can").on("click",".delete-note",deleteNote);
-	//分享笔记
-	$("#search_list").on("click",".btn_share",shareNote);
+	//收藏笔记
+	$("#search_list").on("click",".btn_collect",collectNote);
 	
 	
 	//心跳检测
@@ -110,6 +97,22 @@ $(function(){
 	//浏览器调试过程调用方法
 //	$("#add_notebook").click(demo);
 });
+
+/** 收藏笔记 */
+function collectNote(){
+	let url = "note/collect.do";
+	let btn = $(this);
+	let li = btn.parent().parent().parent().parent();
+	let data = {"noteId":li.data("noteId"),"userId":getCookie("userId")};
+	$.post(url,data,function(result){
+		if(result.state==SUCCESS){
+			tip("收藏成功!");
+			btn.children("i").removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+		}else{
+			alert(result.message);
+		}
+	});
+}
 
 /** 展示搜索结果 */
 function showSearchList(event){
@@ -127,6 +130,11 @@ function showSearchList(event){
 				$("#search_list").show();
 				showNotes("search_list",notes);
 				$("#notebook-list ul").empty();
+				$(document).data("note",null);
+				
+				$("#search_list").find(".note_menu").children().empty();
+				let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="glyphicon glyphicon-star-empty"></i></button></dt>');
+				$("#search_list").find(".note_menu").children("dl").append(collect);
 			}else{
 				alert(result.message);
 			}
@@ -855,29 +863,50 @@ function loadNote(){
 	});
 }
 
-/** 加载笔记和对应的笔记本 */
-function loadNotebookAndNote(){
+///** 加载笔记和对应的笔记本 */
+//function loadNotebookAndNote(){
+//	//加载笔记本
+//	var li = $(this);
+//	//在所属笔记本上绑定选定效果
+//	li.parent().find("a").removeClass("checked");
+//	li.find("a").addClass("checked");
+//	
+//	var url = "note/findNotebook.do";
+//	var data = {noteId:li.data("noteId")};
+//	$.getJSON(url,data,function(result){
+//		if(result.state==SUCCESS){
+//			var notebook = result.data;
+//			//展示在笔记本显示区域
+//			showNotebooks([notebook]);
+//		}else{
+//			alert(result.message);
+//		}
+//	});
+//	
+//	//加载笔记
+//	url = "note/load.do";
+//	data = {noteId:li.data("noteId")};
+//	$.getJSON(url,data,function(result){
+//		if(result.state==SUCCESS){
+//			var note = result.data;
+//			showNote(note);
+//		}else{
+//			alert(result.message);
+//		}
+//	});
+//}
+
+/** 加载只读笔记 */
+function loadOnlyReadNote(){
 	//加载笔记本
 	var li = $(this);
 	//在所属笔记本上绑定选定效果
 	li.parent().find("a").removeClass("checked");
 	li.find("a").addClass("checked");
 	
-	var url = "note/findNotebook.do";
-	var data = {noteId:li.data("noteId")};
-	$.getJSON(url,data,function(result){
-		if(result.state==SUCCESS){
-			var notebook = result.data;
-			//展示在笔记本显示区域
-			showNotebooks([notebook]);
-		}else{
-			alert(result.message);
-		}
-	});
-	
 	//加载笔记
-	url = "note/load.do";
-	data = {noteId:li.data("noteId")};
+	let url = "note/load.do";
+	let data = {noteId:li.data("noteId")};
 	$.getJSON(url,data,function(result){
 		if(result.state==SUCCESS){
 			var note = result.data;
@@ -1016,7 +1045,9 @@ function showNotes(location,notes){
 		li = $(li);
 		// 将 note.id 绑定到 li
 		li.data("noteId",note.id);
-		
+		if(note.noteTypeId == 4){
+			li.find(".btn_share").remove();
+		}
 		ul.append(li);
 	}
 }
@@ -1096,7 +1127,7 @@ var noteTemplate = '<li class="online note">'+
 						'<div class="note_menu" tabindex="-1">'+
 							'<dl>'+
 								'<dt><button type="button" class="btn btn-default btn-xs btn_move" title="移动至..."><i class="fa fa-random"></i></button></dt>'+
-								'<dt><button id="shareNote" type="button" class="btn btn-default btn-xs btn_share" title="分享"><i class="fa fa-sitemap"></i></button></dt>'+
+								'<dt><button type="button" class="btn btn-default btn-xs btn_share" title="分享"><i class="fa fa-sitemap"></i></button></dt>'+
 								'<dt><button type="button" class="btn btn-default btn-xs btn_delete" title="删除"><i class="fa fa-times"></i></button></dt>'+
 							'</dl>'+
 						'</div>'+

@@ -184,4 +184,21 @@ public class NoteController extends AbstractController{
 		return new JsonResult(notebook);
 	}
 	
+	/**
+	 * 收藏笔记
+	 * @param userId
+	 * @param noteId
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/collect.do")
+	@ResponseBody
+	public Object collect(String userId, String noteId, HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+		if(!user.getId().equals(userId)) {
+			throw new RuntimeException("操作用户与登录用户不匹配!");
+		}
+		noteService.collect(userId,noteId);
+		return new JsonResult();
+	}
 }

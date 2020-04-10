@@ -11282,7 +11282,7 @@ a.checked button{
 .note_menu_show{
 	display:block;
 }
-.note_menu .btn_delete,.btn_share,.btn_move{
+.note_menu .btn_delete,.btn_share,.btn_move,.btn_collect{
 	padding:0 5px 1px;
 	left:8px;
 	position:relative;
