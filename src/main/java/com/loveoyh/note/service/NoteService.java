@@ -131,4 +131,11 @@ public interface NoteService {
 	 * @param noteId
 	 */
 	public void collect(String userId, String noteId) throws UserNotFoundException, NoteNotFoundException;
+	
+	/**
+	 * 根据用户id查询所有的收藏笔记
+	 * @param userId
+	 * @return
+	 */
+	public List<Map<String,Object>> listCollects(String userId) throws UserNotFoundException;
 }

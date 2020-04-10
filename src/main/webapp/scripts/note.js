@@ -90,13 +90,80 @@ $(function(){
 	//收藏笔记
 	$("#search_list").on("click",".btn_collect",collectNote);
 	
+	//==========================收藏笔记展示=================================
+	//
+	$("#like_button").click(showLike);
 	
-	//心跳检测
+	$("#collect_list").on("click",".note",loadNote);
+	
+	//绑定笔记子菜单的触发时间
+	$("#collect_list").on("click",".btn-note-menu",showNoteMenu);
+	
+	$("#collect_list").on("click",".btn_collect",cancleCollectNote);
+	
+	//==========================心跳检测================================
 	startHeartBeat();
 	
 	//浏览器调试过程调用方法
 //	$("#add_notebook").click(demo);
 });
+
+/** 取消收藏笔记 */
+function cancleCollectNote(){
+	let noteId = $(this).parent().parent().parent().parent().data("noteId");
+	let url = "note/remove.do";
+	let data = {"noteId":noteId};
+	$.post(url,data,function(result){
+		if(result.state==SUCCESS){
+			var li = $("#collect_list .checked").parent();
+			var lis = li.siblings();
+			if(lis.size()>0){
+				lis.eq(0).click();
+			}
+			li.slideUp(200, function(){$(this).remove()});
+			tip("删除成功!");
+		}else{
+			alert(result.message);
+		}
+	});
+	return false;
+}
+
+/** 监听收藏按钮被点击 */
+function showLike(){
+	var btn = $(this);
+	//切换收藏笔记
+	closePanel();
+	$('#collect_list').show();
+	
+	//删除编辑框中的内容
+	$("#input_note_title").val("");
+	um.setContent("");
+	
+	//ajax异步请求抓取相关信息
+	loadCollectNote();
+}
+
+/** 加载收藏笔记 */
+function loadCollectNote(){
+	let url = "note/listCollects.do";
+	let data = {"userId":getCookie("userId")};
+	$.post(url,data,function(result){
+		if(result.state==SUCCESS){
+			let notes = result.data;
+			showNotes("#collect_list",notes);
+			$("#notebook-list ul").empty();
+			
+			$(document).data("note",null);
+			//调整下拉菜单
+			$("#collect_list").find(".note_menu").children().empty();
+			let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="glyphicon glyphicon-star"></i></button></dt>');
+			$("#collect_list").find(".note_menu").children("dl").append(collect);
+		}else{
+			alert(result.message);
+		}
+	});
+}
 
 /** 收藏笔记 */
 function collectNote(){
@@ -107,7 +174,6 @@ function collectNote(){
 	$.post(url,data,function(result){
 		if(result.state==SUCCESS){
 			tip("收藏成功!");
-			btn.children("i").removeClass("glyphicon-star-empty").addClass("glyphicon-star");
 		}else{
 			alert(result.message);
 		}
@@ -128,7 +194,7 @@ function showSearchList(event){
 				//关闭其他面版 打开搜索结果列表
 				closePanel();
 				$("#search_list").show();
-				showNotes("search_list",notes);
+				showNotes("#search_list",notes);
 				$("#notebook-list ul").empty();
 				$(document).data("note",null);
 				
@@ -356,7 +422,6 @@ function replayNotebook(notebookId){
 	var url = "notebook/replay.do";
 	//不用考虑用户，因为每个笔记本自动绑定了用户，恢复不像笔记可以恢复到
 	//不用的笔记本中，这里直接恢复就可以了，不用考虑恢复到哪个用户
-	console.log(notebookId);
 	var data = {"notebookId":notebookId};
 	
 	$.post(url,data,function(result){
@@ -1026,7 +1091,7 @@ function loadNotes(){
 			var notes = result.data;
 //			console.log(notes);
 			//判断是否有笔记
-			showNotes("note-list",notes);
+			showNotes("#note-list",notes);
 		}else{
 			alert(result.message)
 		}
@@ -1036,7 +1101,7 @@ function loadNotes(){
 function showNotes(location,notes){
 //	console.log(notes);
 	//将每个笔记对象显示到屏幕的ul区域
-	let id = "#"+location+" ul";
+	let id = location+" ul";
 	var ul = $(id);
 	ul.empty();
 	for(var i=0;i<notes.length;i++){
@@ -1093,6 +1158,7 @@ function closePanel(){
 	$("#trash-bin").hide();
 	$("#note-list").hide();
 	$("#search_list").hide();
+	$("#collect_list").hide();
 }
 
 /**

@@ -62,7 +62,7 @@ public class NoteServiceImpl implements NoteService {
 		return noteDAO.findNotesByNotebookId(notebookId);
 	}
 	
-//	@Transactional
+	@Transactional
 	public Note getNote(String noteId) throws NoteNotFoundException {
 		if(noteId==null || noteId.trim().isEmpty()){
 			throw new NoteNotFoundException("笔记ID错误");
@@ -394,5 +394,18 @@ public class NoteServiceImpl implements NoteService {
 		note.setUserId(userId);
 		
 		noteDAO.addNote(note);
+	}
+
+	public List<Map<String,Object>> listCollects(String userId) throws UserNotFoundException {
+		if(userId==null || userId.trim().isEmpty()){
+			throw new UserNotFoundException("ID不能空");
+		}
+		User user = userDAO.findUserById(userId);
+		if(user==null){
+			throw new UserNotFoundException("用户不存在");
+		}
+		
+		List<Map<String,Object>> notes = noteDAO.findNotes(userId, null, "1");
+		return notes;
 	}
 }

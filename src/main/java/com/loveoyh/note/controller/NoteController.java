@@ -201,4 +201,21 @@ public class NoteController extends AbstractController{
 		noteService.collect(userId,noteId);
 		return new JsonResult();
 	}
+	
+	/**
+	 * 根据用户id搜索所有收藏笔记
+	 * @param userId
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/listCollects.do")
+	@ResponseBody
+	public Object listCollects(String userId, HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+		if(!user.getId().equals(userId)) {
+			throw new RuntimeException("操作用户与登录用户不匹配!");
+		}
+		List<Map<String,Object>> notes = noteService.listCollects(userId);
+		return new JsonResult(notes);
+	}
 }
