@@ -3,5 +3,163 @@
  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 
 <mapper namespace="com.loveoyh.note.dao.ActivityDAO">
+	<!-- 添加活动 -->
+	<!-- int add(Activity activity) -->
+	<insert id="add" parameterType="com.loveoyh.note.entity.Activity">
+		insert into
+			cn_activity
+		(
+			cn_activity_id,
+			cn_activity_status_id,
+			cn_activity_title,
+			cn_activity_body,
+			cn_activity_end_time
+		)
+		values
+		(
+			#{id},
+			#{activityStatusIdj},
+			#{title},
+			#{body},
+			#{deadline}
+		)
+	</insert>
 	
+	<!-- 查询所有的活动 -->
+	<!-- List<Activity> listActivities() -->
+	<select id="listActivities" resultType="com.loveoyh.note.entity.Activity">
+		select
+			cn_activity_id as id,
+			cn_activity_status_id as activityStatusId,
+			cn_activity_title as title,
+			cn_activity_body as body,
+			cn_activity_end_time as deadline
+		from
+			cn_activity
+		where
+			cn_activity_status_id = 1
+	</select>
+	
+	<!-- 通过活动id查询活动 -->
+	<!-- Activity findActivityById(String activityId) -->
+	<select id="findActivityById" resultType="com.loveoyh.note.entity.Activity">
+		select
+			cn_activity_id as id,
+			cn_activity_status_id as activityStatusId,
+			cn_activity_title as title,
+			cn_activity_body as body,
+			cn_activity_end_time as deadline
+		from
+			cn_activity
+		where
+			cn_activity_id = #{activityId}
+	</select>
+	
+	<!-- 通过活动id查询活动的笔记 -->
+	<!-- List<ActivityNote> findActivityNotesByActivityId(String activityId) -->
+	<select id="findActivityNotesByActivityId" resultType="com.loveoyh.note.entity.ActivityNote">
+		select
+			cn_note_activity_id as id,
+			cn_activity_id as activityId,
+			cn_note_id as noteId,
+			cn_note_activity_up as up,
+			cn_note_activity_down as down,
+			cn_note_activity_title as title,
+			cn_note_activity_body as body
+		from
+			cn_note_activity
+		where
+			cn_activity_id = #{activityId}
+	</select>
+	
+	<!-- 添加笔记到活动中 -->
+	<!-- int addNoteToActivity(ActivityNote activityNote) -->
+	<insert id="addNoteToActivity" parameterType="com.loveoyh.note.entity.ActivityNote">
+		insert into
+			cn_note_activity
+		(
+			cn_note_activity_id,
+			cn_activity_id,
+			cn_note_id,
+			cn_note_activity_up,
+			cn_note_activity_down,
+			cn_note_activity_title,
+			cn_note_activity_body
+		)
+		values
+		(
+			#{id},
+			#{activityId},
+			#{noteId},
+			#{up},
+			#{down},
+			#{title},
+			#{body}
+		)
+	</insert>
+	
+	<!-- 通过活动 -->
+	<!-- ActivityNote findActivityNoteByIdAndNoteId(String activityId, String noteId) -->
+	<select id="findActivityNoteByIdAndNoteId" resultType="com.loveoyh.note.entity.ActivityNote">
+		select
+			cn_note_activity_id as id,
+			cn_activity_id as activityId,
+			cn_note_id as noteId,
+			cn_note_activity_up as up,
+			cn_note_activity_down as down,
+			cn_note_activity_title as title,
+			cn_note_activity_body as body
+		from
+			cn_note_activity
+		where
+			cn_activity_id = #{activityId} and
+			cn_note_id = #{noteId}
+	</select>
+	
+	<!-- 更新活动笔记 -->
+	<!-- int updateActivityNote(ActivityNote note) -->
+	<update id="updateActivityNote" parameterType="com.loveoyh.note.entity.ActivityNote">
+		update
+	        cn_note_activity
+		    <set>
+		    	<trim suffixOverrides=",">
+			        <if test="up!=null">
+			            cn_note_activity_up=#{up},
+			        </if>
+			        <if test="down!=null">
+			            cn_note_activity_down=#{down},
+			        </if>
+			        <if test="title!=null">
+			            cn_note_activity_title=#{title},
+			        </if>
+			        <if test="body!=null">
+			            cn_note_activity_body=#{body},
+			        </if>
+			    </trim>
+		    </set>
+	    where 
+	        cn_note_activity_id=#{id}
+	</update>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,10 @@
 package com.loveoyh.note.service.ex;
 
+/**
+ * 笔记本未找到异常
+ * @author oyh
+ *
+ */
 public class NotebookNotFoundException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 

@@ -34,6 +34,7 @@
 			<mvc:mapping path="/note/*"/>
 			<mvc:mapping path="/notebook/*"/>
 			<mvc:mapping path="/user/*"/>
+			<mvc:mapping path="/activity/*"/>
 			<mvc:exclude-mapping path="/user/login.do"/>
 			<mvc:exclude-mapping path="/user/regist.do"/>
 			<ref bean="accessInterceptor" />

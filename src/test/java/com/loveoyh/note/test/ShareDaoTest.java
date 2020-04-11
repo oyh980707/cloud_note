@@ -8,7 +8,6 @@ import org.junit.Test;
 import com.loveoyh.note.dao.PostDAO;
 import com.loveoyh.note.dao.ActivityDAO;
 import com.loveoyh.note.entity.Post;
-import com.loveoyh.note.entity.Share;
 
 public class ShareDaoTest extends BaseTest{
 	private ActivityDAO dao;
@@ -18,14 +17,14 @@ public class ShareDaoTest extends BaseTest{
 		dao = ctx.getBean("shareDAO",ActivityDAO.class);
 	}
 	
-	@Test
-	public void testFindPostById(){
-		String noteId = "a0aeece7-ad79-4a57-90d2-d78966182a8b";
-		Share share = new Share();
-		share.setId(UUID.randomUUID().toString());
-		share.setNoteId(noteId);
-		share.setTitle("oyh");
-		share.setBody("oyh");
-		dao.save(share);
-	}
+//	@Test
+//	public void testFindPostById(){
+//		String noteId = "a0aeece7-ad79-4a57-90d2-d78966182a8b";
+//		Share share = new Share();
+//		share.setId(UUID.randomUUID().toString());
+//		share.setNoteId(noteId);
+//		share.setTitle("oyh");
+//		share.setBody("oyh");
+//		dao.save(share);
+//	}
 }

@@ -157,7 +157,7 @@ function loadCollectNote(){
 			$(document).data("note",null);
 			//调整下拉菜单
 			$("#collect_list").find(".note_menu").children().empty();
-			let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="glyphicon glyphicon-star"></i></button></dt>');
+			let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="fa fa-star"></i></button></dt>');
 			$("#collect_list").find(".note_menu").children("dl").append(collect);
 		}else{
 			alert(result.message);
@@ -199,7 +199,7 @@ function showSearchList(event){
 				$(document).data("note",null);
 				
 				$("#search_list").find(".note_menu").children().empty();
-				let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="glyphicon glyphicon-star-empty"></i></button></dt>');
+				let collect = $('<dt><button type="button" class="btn btn-default btn-xs btn_collect" title="收藏"><i class="fa fa-star-o"></i></button></dt>');
 				$("#search_list").find(".note_menu").children("dl").append(collect);
 			}else{
 				alert(result.message);

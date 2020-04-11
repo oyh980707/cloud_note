@@ -10,10 +10,16 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/favico-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="ico/favico-57-precomposed.png">
         <link rel="shortcut icon" href="ico/favico.png">
-        <link rel="shortcut icon" href="ico/favico.ico">
         <link rel="stylesheet" href="styles/icon.css"/>
         <link rel="stylesheet" href="styles/main.css"/>
         <link rel="stylesheet" href="styles/prettify.css"/>
+        <style type="text/css">
+        	ul,li{ 
+	        	padding:0;
+	        	margin:0;
+	        	list-style:none
+        	}
+        </style>
     </head>
     <body class="animated fadeIn">
         <header class="header">
@@ -51,13 +57,52 @@
 								<h3 class="lead"><i class="fa fa-rss"></i> 近期活动</h3>
 								<div class="row">
 									<div class="col-sm-4" id='col_0'>
-										
+										<div class="panel panel-primary">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">[time]</span>
+										</div>
+										<div class="panel panel-default">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">2020-4-12</span>
+										</div>
 									</div>
 									<div class="col-sm-4" id='col_1'>
-										
+										<div class="panel panel-success">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">2020-4-12</span>
+										</div>
+										<div class="panel panel-info">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">2020-4-12</span>
+										</div>
 									</div>
 									<div class="col-sm-4" id='col_2'>
-										
+										<div class="panel panel-warning">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">2020-4-12</span>
+										</div>
+										<div class="panel  panel-danger">
+										  <div class="panel-heading">[title]</div>
+										  <div class="panel-body">
+										    [content]
+										  </div>
+										  <span class="deadline" style="color: red">2020-4-12</span>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -75,13 +120,13 @@
 		<script type="text/javascript" src="scripts/bootstrap.min.js"></script>   
         <script type="text/javascript" src="scripts/theme-setup.js"></script>
 		<!-- 全局变量&&AJAX&&回调函数&&COOKIE -->
-		<script type="text/javascript" src="scripts/BaseValues.js"></script>
+		<!-- <script type="text/javascript" src="scripts/BaseValues.js"></script>
 		<script type="text/javascript" src="scripts/activity/activity.js"></script>
-		<script type="text/javascript" src="scripts/activity/activity_callback.js"></script>
+		<script type="text/javascript" src="scripts/activity/activity_callback.js"></script> -->
 		<script type="text/javascript" src="scripts/cookie_util.js"></script>
-		<script type="text/javascript" src="scripts/utils.js"></script>
+		<!-- <script type="text/javascript" src="scripts/utils.js"></script> -->
 		<!-- 页面事件处理JS -->
-		<script type="text/javascript" src='scripts/local.js'></script>
+		<!-- <script type="text/javascript" src='scripts/local.js'></script> -->
 		<script type="text/javascript" src="scripts/activity.js"></script>
 		<script type="text/javascript">
 			function get_dom(e){
@@ -96,9 +141,9 @@
 			window.onresize=function(){
 				set_height();
 			}
-			window.onload=function(){
+			/* window.onload=function(){
 				activity_list();
-			}
+			} */
 		</script>
     </body>		
 </html>

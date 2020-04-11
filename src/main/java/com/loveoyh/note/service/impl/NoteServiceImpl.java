@@ -376,7 +376,7 @@ public class NoteServiceImpl implements NoteService {
 		if(userId==null || userId.trim().isEmpty()){
 			throw new UserNotFoundException("ID不能空");
 		}
-		User user = userDAO.findUserById(userId);
+		User user = userDAO.findUserById(userId); 
 		if(user==null){
 			throw new UserNotFoundException("用户不存在");
 		}
